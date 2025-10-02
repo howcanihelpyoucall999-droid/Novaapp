@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Social App</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+  .container { max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px; margin-top: 50px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+  input, button { width: 100%; padding: 10px; margin: 5px 0; }
+  .post { border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 5px; background: #fafafa; }
+  img { max-width: 100%; margin-top: 10px; border-radius: 5px; }
+  .logout { background: #ff4d4d; color: white; }
+</style>
+</head>
+<body>
+
+<div class="container" id="authContainer">
+  <h2>Sign Up / Login</h2>
+  <input type="text" id="username" placeholder="Enter your username" />
+  <button onclick="login()">Login / Sign Up</button>
+</div>
+
+<div class="container" id="appContainer" style="display:none;">
+  <h2>Welcome, <span id="currentUser"></span></h2>
+  <button class="logout" onclick="logout()">Logout</button>
+  <hr>
+  <h3>Upload a Picture</h3>
+  <input type="file" id="imageInput" accept="image/*" />
+  <button onclick="uploadImage()">Upload</button>
+  <hr>
+  <h3>Feed</h3>
+  <div id="feed"></div>
+</div>
+
+<script>
+let currentUser = null;
+
+// Check if user already logged in
+if(localStorage.getItem('currentUser')){
+  currentUser = localStorage.getItem('currentUser');
+  showApp();
+}
+
+// Login / Signup function
+function login(){
+  const username = document.getElementById('username').value.trim();
+  if(!username){
+    alert('Enter a username!');
+    return;
+  }
+  currentUser = username;
+  localStorage.setItem('currentUser', username);
+
+  // Ensure user data exists
+  if(!localStorage.getItem('users')){
+    localStorage.setItem('users', JSON.stringify({}));
+  }
+  let users = JSON.parse(localStorage.getItem('users'));
+  if(!users[username]) users[username] = [];
+  localStorage.setItem('users', JSON.stringify(users));
+
+  showApp();
+}
+
+// Show main app
+function showApp(){
+  document.getElementById('authContainer').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'block';
+  document.getElementById('currentUser').innerText = currentUser;
+  renderFeed();
+}
+
+// Logout
+function logout(){
+  localStorage.removeItem('currentUser');
+  location.reload();
+}
+
+// Upload image
+function uploadImage(){
+  const fileInput = document.getElementById('imageInput');
+  const file = fileInput.files[0];
+  if(!file){ alert('Select an image!'); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    let users = JSON.parse(localStorage.getItem('users'));
+    users[currentUser].push(e.target.result);
+    localStorage.setItem('users', JSON.stringify(users));
+    fileInput.value = '';
+    renderFeed();
+  }
+  reader.readAsDataURL(file);
+}
+
+// Render feed
+function renderFeed(){
+  const feed = document.getElementById('feed');
+  feed.innerHTML = '';
+  const users = JSON.parse(localStorage.getItem('users'));
+  for(let user in users){
+    users[user].forEach(img => {
+      const div = document.createElement('div');
+      div.classList.add('post');
+      div.innerHTML = `<strong>${user}</strong><br><img src="${img}" />`;
+      feed.appendChild(div);
+    });
+  }
+}
+</script>
+
+</body>
+</html>
