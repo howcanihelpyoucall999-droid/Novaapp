@@ -2,139 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Download Zag Messenger APK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zag Messenger – Download APK</title>
+
   <style>
-    :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --accent:#06b6d4;
-      --text:#e6eef6;
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #ffffff;
+      color: #0b1f4f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
     }
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      background:linear-gradient(180deg,#071028 0%, #0b1320 100%);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
+
+    .card {
+      background: #f4f8ff;
+      border: 2px solid #d7e3ff;
+      border-radius: 20px;
+      padding: 35px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 65, 150, 0.1);
     }
-    .card{
-      background:rgba(255,255,255,0.03);
-      border-radius:14px;
-      padding:28px;
-      width:100%;
-      max-width:480px;
-      box-shadow:0 8px 30px rgba(2,6,23,0.6);
-      text-align:center;
+
+    .title {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0b4fff;
     }
-    h1{ margin:0 0 8px; font-size:20px; }
-    p{ margin:0 0 18px; color:rgba(230,238,246,0.85); }
-    .download-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:14px 20px;
-      border-radius:12px;
-      background:linear-gradient(90deg,var(--accent), #0ea5a4);
-      color:#022;
-      font-weight:700;
-      text-decoration:none;
-      box-shadow:0 6px 18px rgba(6,182,212,0.12);
-      transition:transform .12s ease, box-shadow .12s ease;
-      border: none;
-      cursor: pointer;
+
+    .subtitle {
+      font-size: 15px;
+      margin-bottom: 25px;
+      color: #0b1f4f;
+      opacity: 0.8;
     }
-    .download-btn:active{ transform:translateY(1px) scale(.998); }
-    .small{
-      margin-top:12px;
-      display:block;
-      color:rgba(230,238,246,0.7);
-      font-size:13px;
+
+    .download-btn {
+      display: inline-block;
+      padding: 14px 22px;
+      background: #0b4fff;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 5px 14px rgba(0, 70, 255, 0.25);
+      transition: 0.15s ease;
     }
-    .notice{
-      margin-top:16px;
-      font-size:13px;
-      color:rgba(230,238,246,0.6);
+
+    .download-btn:active {
+      transform: scale(0.98);
     }
-    .muted{ color:rgba(230,238,246,0.5); font-size:13px; margin-top:10px;}
+
+    .small {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #0b1f4f;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1>Zag Messenger APK</h1>
-    <p>Tap the button below to download the installer file <strong>zagmessenger.apk</strong>.</p>
 
-    <!-- Primary download button (preferred) -->
-    <!-- Place zagmessenger.apk in the same folder as this HTML, or replace href with the full URL to the APK -->
-    <a id="apkDownload" class="download-btn" href="zagmessenger.apk" download="zagmessenger.apk" role="button" aria-label="Download Zag Messenger APK">
-      ⤓ Download APK
+  <div class="card">
+    <div class="title">Zag Messenger</div>
+    <div class="subtitle">Download the latest Android APK</div>
+
+    <a href="zagmessenger.apk" download="zagmessenger.apk" class="download-btn">
+      Download APK
     </a>
 
-    <div class="small">If the download doesn't start, long-press the button and choose "Save link" (Android browsers).</div>
+    <div class="small">Tap to start downloading the app.</div>
+  </div>
 
-    <div class="notice" id="status">Status: ready</div>
-
-    <div class="muted">
-      Tip: For best compatibility, host the APK with header <code>Content-Type: application/vnd.android.package-archive</code>.
-      Also ensure your webserver sends <code>Content-Disposition: attachment; filename="zagmessenger.apk"</code> if you want to force download.
-    </div>
-  </main>
-
-  <script>
-    // JavaScript: Friendly checks and better UX
-    (function(){
-      const btn = document.getElementById('apkDownload');
-      const status = document.getElementById('status');
-
-      // If user isn't on Android, warn them (optional)
-      const ua = navigator.userAgent || '';
-      const onAndroid = /Android/i.test(ua);
-
-      if(!onAndroid){
-        status.textContent = 'Note: You are not on Android — APK can only be installed on Android devices.';
-      }
-
-      // Try to check file availability (HEAD). This can fail if server blocks CORS.
-      async function checkApk() {
-        try {
-          const res = await fetch(btn.href, { method: 'HEAD' });
-          if (!res.ok) {
-            status.textContent = 'File not found on server (HTTP ' + res.status + ').';
-          } else {
-            const size = res.headers.get('content-length');
-            if (size) {
-              // format bytes
-              const i = Math.floor(Math.log(size) / Math.log(1024));
-              const sizes = ['B','KB','MB','GB','TB'];
-              const human = (size / Math.pow(1024, i)).toFixed(i?2:0) + ' ' + sizes[i];
-              status.textContent = 'File available — ' + human;
-            } else {
-              status.textContent = 'File available.';
-            }
-          }
-        } catch (err) {
-          // CORS or network — don't fail hard, show friendly note
-          status.textContent = 'Ready. (Could not check file due to server/CORS restrictions.)';
-        }
-      }
-
-      // run check (best effort)
-      checkApk();
-
-      // On click: for some Android browsers the download attribute may be ignored; this fallback attempts to navigate.
-      btn.addEventListener('click', function(e){
-        // allow default anchor behavior; update status
-        status.textContent = 'Starting download...';
-        // set a timeout to show that download likely started
-        setTimeout(()=>{
-          status.textContent = 'If the download did not start, try long-press & Save link.';
-        }, 3500);
-      });
-    })();
-  </script>
 </body>
-  </html>
+</html>
